@@ -4,30 +4,21 @@
  */
 import java.io.*;
 import java.util.*;
+import java.lang.*;
 public class Practica01 {
-	String n,tel,dir,retorno;
+	String retorno;
 	int p=0,nLineas;
 	Scanner Lectora=new Scanner (System.in);
 /*************************/
-	public void capturar(){
-		System.out.println("Nombre:");
-		n=Lectora.nextLine();
-		System.out.println("Telefono:");
-		tel=Lectora.next();
-		System.out.println("Direccion:");
-		dir=Lectora.next();
-		try{
-			RandomAccessFile bw=new RandomAccessFile("agenda.txt","rw");
-			bw.seek( bw.length());
-			bw.writeUTF(n);
-			bw.writeUTF(tel);
-			bw.writeUTF(dir);
-			bw.close();
+	public String QuitarComentarios(String linea){
+		if(linea.contains(";")){
+			int p=linea.indexOf(';');
+			if(p>0){
+				linea=linea.substring(0,p);
+			}else if(p==0)
+				linea="";
 		}
-		catch(IOException ioe){
-			System.out.println("No se pudo abrir archivo....");
-		}
-
+		return linea;
     }
 /*************************/
 	public void escribir(String ruta, String cadena){
@@ -45,9 +36,10 @@ public class Practica01 {
 /*************************/
 	public void leer(String ruta){
 		ArrayList array = new ArrayList();
-		String linea,retorno;
+		String linea,extension;
 		linea=retorno="";
 		nLineas=p=0;
+		extension=ruta.substring(ruta.lastIndexOf('.'),ruta.length());
 		File archivo = new File(ruta);
 		try {
 			FileReader leerArchivo = new FileReader(archivo);
@@ -64,15 +56,17 @@ public class Practica01 {
 				retorno+=linea+"\n";
 			}
 			buffer.close();
+			System.out.println("/***************/\n"+retorno+"/***************/");
 		}
 		catch (Exception ex){
-			if(ruta.contains(".ASM")){
+			/*** Solucion generica ***/
+			if(extension.equals(".ASM")){
 				p=ruta.lastIndexOf('.');
-				leer(ruta.substring(0,p)+".asm");
+				leer(ruta.replace(extension,".asm"));
 			}else
+			/*** FIN de Solucion generica ***/
 				System.out.println("NO EXISTE ARCHIVO "+ruta);
 		}
-		System.out.println("/***************/\n"+retorno+"/***************/");
 	}
 /*************************/
     public static void main(String a[]){
@@ -82,8 +76,8 @@ public class Practica01 {
 		int opcion;
 		do{
 			opcion=0;
-		    System.out.println("\n Por Favor, escriba ruta con archivo:");
-		    ruta=Lectora.next();
+		    System.out.print("\n Por Favor, escriba ruta con archivo:   ");
+		    ruta=Lectora.nextLine();
 			if(ruta.contains(extension)|ruta.contains(extension.toLowerCase()) ){
 				archivo.leer(ruta);
 			}else if(!ruta.contains(".")){

@@ -5,37 +5,29 @@
 import java.io.*;
 import java.util.*;
 public class Practica01 {
-	String n,tel,dir,retorno,ruta;
+	String retorno;
 	int p=0,nLineas;
 	Scanner Lectora=new Scanner (System.in);
 /*************************/
-	public void capturar(){
-		System.out.println("Nombre:");
-		n=Lectora.nextLine();
-		System.out.println("Telefono:");
-		tel=Lectora.next();
-		System.out.println("Direccion:");
-		dir=Lectora.next();
-		try{
-			RandomAccessFile bw=new RandomAccessFile("agenda.txt","rw");
-			bw.seek( bw.length());
-			bw.writeUTF(n);
-			bw.writeUTF(tel);
-			bw.writeUTF(dir);
-			bw.close();
+	public String QuitarComentarios(String linea){
+		if(linea.contains(";")){
+			int p=linea.indexOf(';');
+			if(p>0){
+				linea=linea.substring(0,p);
+			}else if(p==0)
+				linea="";
 		}
-		catch(IOException ioe){
-			System.out.println("No se pudo abrir archivo....");
-		}
-
+		return linea;
     }
 /*************************/
-	public void escribir(/*String ruta,*/ String cadena){
-		File archivo = new File(ruta+".INST");
+	public void escribir(String ruta,String extension){
+		int p=ruta.lastIndexOf(extension);
+		ruta=ruta.substring(0,p)+".INST";
+		File archivo = new File(ruta);
 		try {
 			FileWriter escribirArchivo = new FileWriter(archivo, true);
 			BufferedWriter buffer = new BufferedWriter(escribirArchivo);
-			buffer.write(cadena);
+			buffer.write(retorno);
 			buffer.newLine();
 			buffer.close();
 		}
@@ -43,53 +35,60 @@ public class Practica01 {
 		}
 	}
 /*************************/
-	public void leer(/*String ruta*/){
+	public void leer(String ruta){
 		ArrayList array = new ArrayList();
-		String linea,retorno;
+		String linea,extension;
+		char primerC;
 		linea=retorno="";
-		nLineas=p=0;
+		nLineas=0;
+		int p=ruta.lastIndexOf('.');
+		extension=ruta.substring(p,ruta.length());
 		File archivo = new File(ruta);
 		try {
 			FileReader leerArchivo = new FileReader(archivo);
 			BufferedReader buffer = new BufferedReader(leerArchivo);
 			while ((linea = buffer.readLine()) != null){
-				nLineas++;
-				if(linea.contains(";")){
-					p=linea.indexOf(';');
-					if(p>0){
-						linea=linea.substring(0,p);
-					}else if(p==0)
-						linea="";
+				nLineas++; //Cuenta numero de lineas leidas en el archivo
+				linea=QuitarComentarios(linea); //Quitar comentarios
+				primerC=linea.charAt(0);
+				if(/*isLetter(primerC) &&*/ linea.length()<=8){
+					if(linea.length()<=5){
+					}
+				}else{
+					System.out.println("Es operando");
 				}
 				retorno+=linea+"\n";
 			}
 			buffer.close();
 		}
 		catch (Exception ex){
-			if(ruta.contains(".ASM")){
+			/*
+			if(extension.equals(".asm")&&ruta.contains(extension)){
 				p=ruta.lastIndexOf('.');
-				leer(ruta.substring(0,p)+".asm");
+				ruta=ruta.substring(0,p)+extension.toUpperCase();
+				leer(ruta);
 			}else
-				System.out.println("NO EXISTE ARCHIVO "+ruta);
+			*/
+				retorno="NO EXISTE ARCHIVO "+ruta;
 		}
-		System.out.println("/***************/\n"+retorno+"/***************/");
+		if(ruta.contains(extension))
+			System.out.println("/***************/\n"+retorno+"/***************/");
 	}
 /*************************/
     public static void main(String a[]){
     	Scanner Lectora=new Scanner(System.in);
     	Practica01 archivo=new Practica01();
-    	String extension=".ASM";
+    	String ruta,extension=".asm";
 		int opcion;
 		do{
 			opcion=0;
 		    System.out.println("\n Por Favor, escriba ruta con archivo:");
 		    ruta=Lectora.next();
-			if(ruta.contains(extension)|ruta.contains(extension.toLowerCase()) ){
+			if(ruta.contains(extension.toUpperCase())|ruta.contains(extension.toLowerCase()) ){
 				archivo.leer(ruta);
 			}else if(!ruta.contains(".")){
 				System.out.println("\n No hay punto \".\" en el nombre, se abrira "+ruta+extension);
-				ruta+=extension;
-				archivo.leer(/*ruta+=extension*/);
+				archivo.leer(ruta+=extension);
 			}else
 				System.out.println("\n ERROR! Solo se admiten archivos "+extension);
 			System.out.println(" Desea reutilizar el programa? (0=NO,1=SI):");
