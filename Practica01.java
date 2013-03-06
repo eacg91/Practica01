@@ -20,28 +20,30 @@ public class Practica01 {
 	public String diferenciarTokens(String linea){
 		int flag=0;
 		StringTokenizer st=new StringTokenizer(linea);
-		String sToken="";
-		char pCt;//,pCl=linea.charAt(0);
-		System.out.print("\n   "+nLineas);//Cuenta numero de lineas leidas
+		char pCt;
+		String sToken,linea2;
+		sToken=linea2="";
+		if(nLineas>0)
+			linea2+=("\n   "+nLineas);//Cuenta numero de lineas leidas
 		while(st.hasMoreTokens()){
 			sToken=st.nextToken();//Tomando token de la linea
 			pCt=sToken.charAt(0);//Primer caracter del token
 			if(flag==0)
-				System.out.print("\t");
+				linea2+="\t";
 			else //Si hay Bandera, quitarla
 				flag=0;
 			if(Character.isLetter(pCt) && sToken.length()<=8){
 				if(sToken.length()<=5 && pCt!=linea.charAt(0) && sToken.indexOf('.')==sToken.lastIndexOf('.')){
-					System.out.print("\t\t  "+sToken);//CODOP
+					linea2+=("\t\t  "+sToken);//CODOP
 				}else if(sToken.length()>5 | pCt==linea.charAt(0) ){
-					System.out.print(sToken);//Etiqueta
+					linea2+=sToken;//Etiqueta
 				}
-					flag=1;
+				flag=1;
 			}else{
-				System.out.print("\t\t "+sToken);//Operando
+				linea2+=("\t\t "+sToken);//Operando
 			}
 		};
-		return linea;
+		return linea2;
     }
 /*************************/
 	public void escribir(String ruta){
@@ -66,14 +68,15 @@ public class Practica01 {
 		try {
 			FileReader leerArchivo = new FileReader(archivo);
 			BufferedReader buffer = new BufferedReader(leerArchivo);
-			System.out.print("#linea\t Etiqueta\t CODOP\t\t Operando");
+			retorno=("#linea\t Etiqueta\t CODOP\t\t Operando");
 			while ((linea = buffer.readLine()) != null){
 				linea=QuitarComentarios(linea); //Quitar comentarios
 				linea=diferenciarTokens(linea.toString());
-				retorno+=linea+"\n";
+				retorno+=linea;
 				nLineas++;
 			}
 			buffer.close();
+			System.out.print(retorno);
 			escribir(ruta);
 		}
 		catch (Exception ex){
