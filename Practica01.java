@@ -33,15 +33,18 @@ public class Practica01 {
 			else //Si hay Bandera, quitarla
 				flag=0;
 			if(Character.isLetter(pCt) && sToken.length()<=8){
-				if(sToken.length()<=5 && pCt!=linea.charAt(0) && sToken.indexOf('.')==sToken.lastIndexOf('.')){
-					linea2+=("\t\t  "+sToken);//CODOP
-				}else if(sToken.length()>5 | pCt==linea.charAt(0) ){
-					linea2+=sToken;//Etiqueta
+				if(pCt==linea.charAt(0))
+					//es Etiqueta
+				else if(sToken.length()<=5 && pCt!=linea.charAt(0)
+				         && sToken.indexOf('.')==sToken.lastIndexOf('.') ){
+					linea2+="\t\t ";//es CODOP
 				}
 				flag=1;
 			}else{
-				linea2+=("\t\t "+sToken);//Operando
+				linea2+="\t\t ";//es Operando
 			}
+			linea2+=sToken;
+			//Aqui mandar token al arbol... instruccion pendiente
 		};
 		return linea2;
     }
