@@ -61,7 +61,7 @@ public void mostrar(String ruta){
 					tieneCodop=1;
 					if(sToken.contains("End")){
 						end=1;
-						break;
+						//break;
 					}
 				}else{
 					log+="\n Frase No reconocida en linea "+nLineas;
@@ -146,9 +146,9 @@ public void mostrar(String ruta){
     	Scanner Lectora=new Scanner(System.in);
     	Practica01 archivo=new Practica01();
     	String ruta,extension=".asm";
-		int p,opcion;
+		int opcion;
 		do{
-			p=opcion=0;
+			opcion=0;
 		    System.out.print("\n Por Favor, escriba ruta con archivo:   ");
 		    ruta=Lectora.next();
 			if(!ruta.contains(".")){
@@ -158,7 +158,6 @@ public void mostrar(String ruta){
 			if(ruta.contains(extension.toUpperCase())|ruta.contains(extension.toLowerCase()) ){
 				ruta=archivo.leer(ruta);
 				archivo.mostrar(ruta);
-				p=ruta.lastIndexOf('.');
 				archivo.escribir(ruta.substring(0,ruta.lastIndexOf('.'))+".INST",archivo.retorno);
 				archivo.escribir("log.log",archivo.log);
 			}else
