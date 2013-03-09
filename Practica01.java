@@ -7,26 +7,19 @@ import java.util.*;
 import java.lang.*;
 public class Practica01 {
 	String original="",retorno="",log="";
-	int nLineas=0;
+	int nLineas,end;
 	Scanner Lectora=new Scanner (System.in);
 /*************************/
 public void mostrar(String ruta){
-	int p=0;
 	File archivo = new File(ruta);
 	if(archivo.exists()){
-		p=ruta.lastIndexOf('.');
 		System.out.println("\n\t---> Original de "+ruta+"\n"+original);
 		System.out.println("\n\t---> Retorno en .INST \n"+retorno);
-		escribir(ruta.substring(0,p)+".INST",retorno);
-		/***** Ultimas revisiones de errores *****/
-		if(retorno.lastIndexOf("END")==0)
-		   log+="\n No finaliza con END";
-		escribir("log.log",log);
-		/***** *****/
+		
 		if(log.length()>0)
 			System.out.println("\n\t---> ERRORES! \n"+log);
 		else
-			System.out.println("\n\t Completado Sin Errores");			
+			System.out.println(log="\n\t Completado Sin Errores");
 	}
 }
 /*************************/
@@ -39,9 +32,9 @@ public void mostrar(String ruta){
     }
 /*************************/
 	public String diferenciarTokens(String linea){
-		int flag=0,tieneCodop=0;
+		int i,flag=0,tieneCodop=0;
 		StringTokenizer st=new StringTokenizer(linea);
-		char pCt;
+		char pCt,c;
 		String sToken,linea2;
 		sToken=linea2="";
 		linea2+=("\n   "+nLineas);//Cuenta numero de lineas leidas
@@ -54,11 +47,22 @@ public void mostrar(String ruta){
 				flag=0;
 			if(Character.isLetter(pCt) && sToken.length()<=8){
 				if(pCt==linea.charAt(0)){
-					//es Etiqueta
+					for(i=1;i<sToken.length();i++){
+						c=sToken.charAt(i);
+						if(Character.isLetterOrDigit(c)|c=='_'){
+							//es Etiqueta
+						}else{
+							log+="\n Caracter '"+c+"' no valido en linea "+nLineas;
+						}
+					}
 				}else if(sToken.length()<=5 && pCt!=linea.charAt(0) && sToken.indexOf('.')==sToken.lastIndexOf('.') ){
 					//es CODOP
 					linea2+="\t\t ";
 					tieneCodop=1;
+					if(sToken.contains("End")){
+						end=1;
+						break;
+					}
 				}else{
 					log+="\n Frase No reconocida en linea "+nLineas;
 				}
@@ -99,8 +103,8 @@ public void mostrar(String ruta){
 		ArrayList array = new ArrayList();
 		String linea,extension;
 		int p=ruta.lastIndexOf('.');
-		linea=retorno=original="";
-		nLineas=0;
+		linea=original=retorno=log="";
+		nLineas=end=0;
 		extension=ruta.substring(p,ruta.length());
 		File archivo = new File(ruta);
 		if(!archivo.exists()){
@@ -126,6 +130,11 @@ public void mostrar(String ruta){
 				}
 			}
 			buffer.close();
+			/***/
+			if(end==0){
+				log+="\n No finaliza con End";
+			}
+			/***/
 		}
 		catch (Exception ex){
 			System.out.println("NO EXISTE ARCHIVO "+ruta);
@@ -137,9 +146,9 @@ public void mostrar(String ruta){
     	Scanner Lectora=new Scanner(System.in);
     	Practica01 archivo=new Practica01();
     	String ruta,extension=".asm";
-		int opcion;
+		int p,opcion;
 		do{
-			opcion=0;
+			p=opcion=0;
 		    System.out.print("\n Por Favor, escriba ruta con archivo:   ");
 		    ruta=Lectora.next();
 			if(!ruta.contains(".")){
@@ -149,6 +158,9 @@ public void mostrar(String ruta){
 			if(ruta.contains(extension.toUpperCase())|ruta.contains(extension.toLowerCase()) ){
 				ruta=archivo.leer(ruta);
 				archivo.mostrar(ruta);
+				p=ruta.lastIndexOf('.');
+				archivo.escribir(ruta.substring(0,ruta.lastIndexOf('.'))+".INST",archivo.retorno);
+				archivo.escribir("log.log",archivo.log);
 			}else
 				System.out.println("\n ERROR! Solo se admiten archivos "+extension);
 			
