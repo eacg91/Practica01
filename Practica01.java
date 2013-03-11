@@ -10,17 +10,18 @@ public class Practica01 {
 	int nLineas,end;
 	Scanner Lectora=new Scanner (System.in);
 /*************************/
-public void mostrar(String ruta){
+public int mostrar(String ruta){
 	File archivo = new File(ruta);
 	if(archivo.exists()){
 		System.out.println("\n\t---> Original de "+ruta+"\n"+original);
 		System.out.println("\n\t---> Retorno en .INST \n"+retorno);
-		
 		if(log.length()>0)
 			System.out.println("\n\t---> ERRORES! \n"+log);
 		else
 			System.out.println(log="\n\t Completado Sin Errores");
+		return 1;
 	}
+	return 0;
 }
 /*************************/
 	public String QuitarComentarios(String linea){
@@ -146,9 +147,9 @@ public void mostrar(String ruta){
     	Scanner Lectora=new Scanner(System.in);
     	Practica01 archivo=new Practica01();
     	String ruta,extension=".asm";
-		int opcion;
+		int opcion,existe;
 		do{
-			opcion=0;
+			opcion=existe=0;
 		    System.out.print("\n Por Favor, escriba ruta con archivo:   ");
 		    ruta=Lectora.next();
 			if(!ruta.contains(".")){
@@ -157,9 +158,11 @@ public void mostrar(String ruta){
 			}
 			if(ruta.contains(extension.toUpperCase())|ruta.contains(extension.toLowerCase()) ){
 				ruta=archivo.leer(ruta);
-				archivo.mostrar(ruta);
-				archivo.escribir(ruta.substring(0,ruta.lastIndexOf('.'))+".INST",archivo.retorno);
-				archivo.escribir("log.log",archivo.log);
+				existe=archivo.mostrar(ruta);
+				if(existe==1){
+					archivo.escribir(ruta.substring(0,ruta.lastIndexOf('.'))+".INST",archivo.retorno);
+					archivo.escribir("log.log",archivo.log);
+				}
 			}else
 				System.out.println("\n ERROR! Solo se admiten archivos "+extension);
 			
