@@ -1,0 +1,6 @@
+#linea Etiqueta  CODOP  Operando
+   1	NULL      ORG    $AB 
+   2	NULL      ET1    SWI 
+   3	NULL      ADCA   1,X 
+   4	NULL      BRA    ET1 
+   5	NULL      END    NULL
